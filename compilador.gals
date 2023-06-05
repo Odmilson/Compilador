@@ -1,0 +1,234 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+Package = gals
+ScannerCaseSensitive = true
+ScannerTable = Compact
+Input = String
+Parser = SLR
+#RegularDefinitions
+d:[0-9]
+l:[a-zA-Z]
+w:[\ \t\n\s\r]
+#Tokens
+//Identificadores
+
+id : {l}({l}|{d}|"_")*
+
+//Palavras reservadas
+
+int = id : "int"
+float = id : "float"
+char = id : "char"
+string = id : "string"
+bool = id : "bool"
+void = id : "void"
+true = id : "true"
+false = id : "false"
+return = id : "return"
+printf = id : "printf"
+scanf = id : "scanf"
+if = id : "if"
+else = id : "else"
+while = id : "while"
+for = id : "for"
+do = id : "do"
+
+//Operadores aritim?ticos (+, -)
+
+soma : "+"
+subtracao :  "-"
+atribuicao : "=" | "+=" | "-=" | "*=" | "/="
+multiplicacao : "*"
+divisao : "/"
+mod : "%"
+incremento : "++"
+decremento : "--"
+
+//Operadores relacionais (>, <, >=, <=, ==, !=)
+
+maiorq : ">"
+menorq : "<"
+maiorigualq : ">="
+menorigualq : "<="
+igual : "=="
+diferente : "!="
+
+//Operadores l?gicos (&&, ||, !)
+
+and : "&&"
+or : "||"
+not : "!"
+
+//Operadores bit a bit (>>, <<, &, |, ~, ^)
+
+shiftright : ">>"
+shiftleft : "<<"
+comercial : "&"
+orbit : "|"
+notbit : "~"
+xor : "^"
+
+//Valores constantes do tipo: Inteiro (Decimal, Bin?rio e Hexadecimal), Real, Caractere e String entre aspas (simples para caractere e dupla para string)
+
+num_int: {d}+ | (("0b" | "0B")[01]*) | (("0x" | "0X")[0-9a-fA-F]*)
+num_real: {d}+\.{d}+
+caracter: "'"."'"
+cadeiachar: \".*\"
+: {w}+
+
+//Comentario
+
+comentario : ("/*" ([^\*]* | (\*+[^"/"]))* "*/") | ("/" "/" .+)
+
+//Delimitadores e pontuadores (ponto, ponto e v?rgula, dois pontos, colchetes, etc.)
+
+ponto : "."
+pontoevirgula : ";"
+virgula : ","
+doispontos : ":"
+abrecolchetes : "["
+fechacolchetes : "]"
+abrechaves : "{"
+fechachaves : "}"
+abreparentese : "("
+fechaparentese : ")"
+#NonTerminals
+<programa>
+<estrutura>
+<funcao>
+<procedimento>
+<parametrosreceb>
+<return>
+<escopo>
+<listacmd>
+<cmd>
+<printf>
+<contprint>
+<scanf>
+<if>
+<else>
+<laco>
+<while>
+<dowhile>
+<for>
+<chamada>
+<parametrospass>
+<declaracao>
+<atribuicao>
+<tipoVar>
+<referencia>
+<ponteiro>
+<variavel>
+<vetor>
+<tipo>
+<void>
+<incremento>
+<decremento>
+<id>
+<exp>
+<exp1>
+<exp2>
+<exp3>
+<exp4>
+<exp5>
+<exp6>
+<exp7>
+<exp8>
+<exp9>
+<exp10>
+<op_rel>
+<op_neg>
+<op_bitwise>
+<op_arit_baixa>
+<op_arit_alta>
+<op_arit_mais_alta>
+<booleano>
+#Grammar
+<programa> ::= <estrutura>;
+
+<estrutura> ::= <estrutura> <funcao> | <estrutura> <procedimento> | <estrutura> comentario | <estrutura> <declaracao> pontoevirgula | <funcao> | <procedimento> | comentario | <declaracao> pontoevirgula;
+
+<funcao> ::= <tipo>#7 <id>#4 abreparentese#6 fechaparentese <escopo> | <tipo>#7 <id>#4 abreparentese#6 <parametrosreceb>#6 fechaparentese <escopo>;
+
+<procedimento> ::= <void>#7 <id>#4 abreparentese#6 fechaparentese <escopo> |  <void>#7 <id>#4 abreparentese#6 <parametrosreceb>#6 fechaparentese <escopo>;
+
+<parametrosreceb> ::= <parametrosreceb>#6 virgula <tipo>#7 <tipoVar>#5 | <parametrosreceb>#6 virgula  <tipo>#7 <atribuicao>#5 | <tipo>#7 <tipoVar>#5 | <tipo>#7 <atribuicao>#5;
+
+<return> ::= return <exp>;
+
+<escopo> ::= abrechaves#11 fechachaves#12 | abrechaves#11 <listacmd> fechachaves#12;
+
+<listacmd> ::= <listacmd> <cmd> | <cmd>;
+
+<cmd> ::= <declaracao> pontoevirgula | <atribuicao> pontoevirgula | <chamada> pontoevirgula | <if> | <laco> | comentario | <printf> pontoevirgula | <scanf> pontoevirgula | <return> pontoevirgula;
+
+<printf> ::= printf abreparentese <contprint> fechaparentese ;
+<contprint> ::= <contprint> soma cadeiachar | <contprint> soma <tipoVar>#25 | cadeiachar | <tipoVar>#25;
+
+<scanf> ::= scanf abreparentese <referencia>#24 fechaparentese;
+
+<if> ::= if abreparentese <exp> fechaparentese <escopo> | if abreparentese <exp> fechaparentese <escopo> <else>;
+ 
+<else> ::= else <escopo> | else <if>;
+
+<laco> ::= <while> | <dowhile> pontoevirgula | <for>;
+
+<while> ::= while abreparentese <exp> fechaparentese <escopo>;
+<dowhile> ::= do <escopo> while abreparentese <exp> fechaparentese;
+<for> ::= for abreparentese <declaracao> pontoevirgula <exp> pontoevirgula <exp> fechaparentese <escopo> | for abreparentese <atribuicao> pontoevirgula <exp> pontoevirgula <exp> fechaparentese <escopo> |
+     	 for abreparentese <declaracao> pontoevirgula <exp> pontoevirgula <incremento> fechaparentese <escopo> | for abreparentese <atribuicao> pontoevirgula <exp> pontoevirgula <incremento> fechaparentese <escopo> |
+	 for abreparentese <declaracao> pontoevirgula <exp> pontoevirgula <decremento> fechaparentese <escopo> | for abreparentese <atribuicao> pontoevirgula <exp> pontoevirgula <decremento> fechaparentese <escopo> |
+	 for abreparentese <declaracao> pontoevirgula <exp> pontoevirgula <atribuicao> fechaparentese <escopo> | for abreparentese <atribuicao> pontoevirgula <exp> pontoevirgula <atribuicao> fechaparentese <escopo>;
+
+
+<chamada> ::= <id>#4 abreparentese#8 fechaparentese | <id>#4 abreparentese#8 <parametrospass> fechaparentese;
+
+<parametrospass> ::= <parametrospass> virgula <referencia> | <parametrospass> virgula <exp> | <referencia> | <exp>;
+
+<declaracao> ::= <declaracao>#7 virgula <tipoVar>#6 | <declaracao>#7 virgula <atribuicao> | <tipo>#7 <tipoVar>#6 | <tipo>#7 <atribuicao>;
+
+<atribuicao> ::= <tipoVar>#9 atribuicao <exp>#10;
+
+<tipoVar> ::= <variavel> | <vetor> | <ponteiro>;
+
+<referencia> ::= comercial<variavel> | comercial<vetor>;
+
+<ponteiro> ::= multiplicacao <variavel> | multiplicacao <vetor>;
+
+<variavel> ::= <id>;
+
+<vetor> ::= <id>#3 abrecolchetes fechacolchetes | <id>#3 abrecolchetes <exp> fechacolchetes;
+
+<tipo> ::= int#1 | float#1 | char#1 | string#1 | bool#1;
+
+<void> ::= void#1;
+
+<incremento> ::= <tipoVar> incremento;
+<decremento> ::= <tipoVar> decremento;
+
+<id> ::= id#2;
+
+<exp>  ::= <exp> or <exp1>#23 | <exp1>#23;
+<exp1> ::= <exp1> and <exp2> | <exp2>;
+<exp2> ::= <exp2> orbit <exp3> | <exp3>;
+<exp3> ::= <exp3> xor <exp4> | <exp4>;
+<exp4> ::= <exp4> comercial <exp5> | <exp5>;
+<exp5> ::= <exp5> <op_rel> <exp6> | <exp6>;
+<exp6> ::= <exp6> <op_bitwise> <exp7> | <exp7>;
+<exp7> ::= <exp7> <op_arit_baixa> <exp8> | <exp8>;
+<exp8> ::= <exp8> <op_arit_alta> <exp9> | <exp9>;
+<exp9> ::= <op_neg> <exp10> | <exp10>;
+<exp10> ::= num_int#13 | num_real#14 | caracter#15 | cadeiachar#16 | <booleano>#17 | abreparentese <exp> fechaparentese | <tipoVar>#8 | <chamada>;
+
+<op_rel> ::= maiorq#22 | menorq#22 | maiorigualq#22 | menorigualq#22 | igual#22 | diferente#22; 
+<op_neg> ::= subtracao | notbit | not;
+<op_bitwise> ::= shiftleft | shiftright;
+<op_arit_baixa> ::= soma#18 | subtracao#19;
+<op_arit_alta> ::= multiplicacao#20 | divisao#21 | mod;
+
+<booleano> ::= true | false;
