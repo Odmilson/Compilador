@@ -26,6 +26,7 @@ public class Semantico implements Constants
     private String idAtribuicao;
     public String pontoText = "";
     private String pontoData = "";
+    private Programa programa = new Programa();
 
     public void executeAction(int action, Token token)	throws SemanticError
     {
@@ -364,5 +365,46 @@ public class Semantico implements Constants
     public TabelaSimbolos getTabelaSimbolos()
     {
         return tabelaSimbolos;
+    }
+    
+    public class Programa
+    {
+        private String pontoData = ".data\n"; 
+        private String pontoText = ".text\n";
+        
+        public void setPontoData(String pontoData)
+        {
+            this.pontoData = pontoData;
+        }
+        
+        public String getPontoData()
+        {
+            return pontoData;
+        }
+        
+        public void setPontoText(String pontoText)
+        {
+            this.pontoText = pontoText;
+        }
+        
+        public String getPontoText()
+        {
+            return pontoText;
+        }
+        
+        public void addCmd (String cmd)
+        {
+            pontoText += cmd + "\n";
+        }
+        
+        public void addData (String data)
+        {
+            pontoData += data + "\n";
+        }
+        
+        public void getPrograma ()
+        {
+            return pontoData + pontoText;
+        }
     }
 }
