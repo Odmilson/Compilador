@@ -17,9 +17,15 @@ public class Semantico implements Constants
     private Boolean inicio = true;
     private Boolean declaracao = false;
     private Boolean atribuicaoIsVet;
+    private Boolean isVariavel;
+    private Boolean flagOperacao = false;
+
+    private Integer contadorOperando = 0;
 
     public String warnings = "";
     private String idAtribuicao;
+    public String pontoText = "";
+    private String pontoData = "";
 
     public void executeAction(int action, Token token)	throws SemanticError
     {
@@ -119,6 +125,22 @@ public class Semantico implements Constants
                     warnings += String.format("Variavel %s utilizada sem ser inicializada\n", 
                                                 variavel.getId()
                                             );
+                if(!variavel.getFlagVetor())
+                {
+                    if(!flagOperacao)
+                    {
+                        pontoText += "LDI " + variavel.getId() + "\n";
+                        break;
+                    }
+
+                    if(pilhaOperacao.peek() == SemanticTable.SUM)
+                        pontoText += "ADD " + variavel.getId() + "\n";
+                    else if(pilhaOperacao.peek() == SemanticTable.SUB)
+                        pontoText += "SUB " + variavel.getId() + "\n";
+
+                    flagOperacao = false;
+                }
+                
 
             }
 
@@ -179,6 +201,11 @@ public class Semantico implements Constants
                 }else {
                     throw new SemanticError ("Atribuição de tipos incompativeis", token.getPosition());
                 }
+
+                if(!atribuicaoIsVet)
+                {
+                    pontoText += "STO " + idAtribuicao + "\n";
+                }
                 
             }
 
@@ -197,7 +224,25 @@ public class Semantico implements Constants
 
             case 13 -> {
 
+                isVariavel = false;
                 this.pilhaTipo.push(SemanticTable.INT);
+
+                if(!flagOperacao)
+                {
+
+                    pontoText += "LDI " + token.getLexeme() + "\n";
+                    break;
+
+                }
+
+                if(pilhaOperacao.peek() == SemanticTable.SUM)
+                    pontoText += "ADDI " + token.getLexeme() + "\n";
+                else if(pilhaOperacao.peek() == SemanticTable.SUB)
+                    pontoText += "SUBI " + token.getLexeme() + "\n";
+
+                flagOperacao = false;
+                    
+                
 
             }
 
@@ -228,12 +273,14 @@ public class Semantico implements Constants
             case 18 -> {
 
                 this.pilhaOperacao.push(SemanticTable.SUM);
+                flagOperacao = true;
 
             }
             
             case 19 -> {
 
                 this.pilhaOperacao.push(SemanticTable.SUB);
+                flagOperacao = true;
 
             }
             
@@ -282,6 +329,12 @@ public class Semantico implements Constants
                         String.format("Variavel %s não declarada", variavel.getId()), 
                         token.getPosition()
                     );
+                    
+                if(!variavel.getFlagVetor())
+                {
+                    pontoText += ("LD $in_port");
+                    pontoText += ("STO " + variavel.getId());
+                }                
 
             }
 
@@ -298,6 +351,9 @@ public class Semantico implements Constants
                     warnings += String.format("Variavel %s utilizada sem ser inicializada\n", 
                                                 variavel.getId()
                                             );
+                
+                pontoText += ("LD $in_port");
+                pontoText += ("STO $in_port");
 
             }
 

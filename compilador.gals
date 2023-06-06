@@ -157,7 +157,8 @@ fechaparentese : ")"
 
 <procedimento> ::= <void>#7 <id>#4 abreparentese#6 fechaparentese <escopo> |  <void>#7 <id>#4 abreparentese#6 <parametrosreceb>#6 fechaparentese <escopo>;
 
-<parametrosreceb> ::= <parametrosreceb>#6 virgula <tipo>#7 <tipoVar>#5 | <parametrosreceb>#6 virgula  <tipo>#7 <atribuicao>#5 | <tipo>#7 <tipoVar>#5 | <tipo>#7 <atribuicao>#5;
+<parametrosreceb> ::= <parametrosreceb>#6 virgula <tipo>#7 <tipoVar>#5 | <parametrosreceb>#6 virgula  <tipo>#7 <atribuicao>#5 
+			| <tipo>#7 <tipoVar>#5 | <tipo>#7 <atribuicao>#5;
 
 <return> ::= return <exp>;
 

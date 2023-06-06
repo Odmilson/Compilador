@@ -11,7 +11,9 @@ public class Simbolo {
     private Boolean flagParametro;
     private Boolean flagInicializada;
     private Boolean flagUsada;
-    private int tamanho = 0;
+    private Integer tamanho;
+    private Integer valor;
+
 
     public Simbolo(){}
     
@@ -122,11 +124,19 @@ public class Simbolo {
         
     }
     
-    public int getTamanho() {
+    public Integer getTamanho() {
         return tamanho;
     }
 
     public void setTamanho(int tamanho) {
         this.tamanho = tamanho;
+    }
+
+    public Integer getValor() {
+        return valor;
+    }
+
+    public void setValor(int valor) {
+        this.valor = valor;
     }
 }

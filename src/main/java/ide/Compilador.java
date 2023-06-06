@@ -21,7 +21,7 @@ public class Compilador {
         Sintatico sint = new Sintatico(); 
         Semantico sem = new Semantico();
         
-        lex.setInput("void sem(){} int count(){int a; string b; float c; scanf(&b); printf(b);} ");
+        lex.setInput("int main(){int cont; cont = 10 - 1;} ");
         
         try {
             sint.parse(lex, sem);
@@ -29,6 +29,7 @@ public class Compilador {
                 System.out.println("Tipo: " + sim.getTipo() + " | Id: " + sim.getId() + " | Escopo: " + sim.getEscopo() + " | Vetor: " + sim.getFlagVetor() + " | Função: " + sim.getFlagFuncao() + " | Parametro: " + sim.getFlagParametro() + " | Inicializada: " + sim.getFlagInicializada() + " | Usada: " + sim.getFlagUsada());
             }
             System.out.println(sem.warnings);
+            System.out.println(sem.pontoText);
             System.out.println("Compilado com sucesso");
         } catch (LexicalError ex) {
             Logger.getLogger(Compilador.class.getName()).log(Level.SEVERE, null, ex);
